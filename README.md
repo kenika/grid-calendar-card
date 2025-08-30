@@ -64,6 +64,8 @@ start_today: true          # NEW: start the 7-day view at “today”
 slot_min_time: '07:00:00'
 slot_max_time: '22:00:00'
 slot_minutes: 60
+locale: de               # optional language override
+time_format: 24          # optional time format (12 or 24)
 px_per_min: 0.8
 height_vh: 80
 header_compact: false
@@ -90,6 +92,8 @@ weather_compact: false     # false = show icon + hi/low; true = tighter
 | `slot_min_time`        | `HH:MM:SS`      | `07:00:00` | Earliest visible hour. |
 | `slot_max_time`        | `HH:MM:SS`      | `22:00:00` | Latest visible hour. |
 | `slot_minutes`         | number          | `30`    | Minor grid step in minutes (1–180). |
+| `locale`               | string          | HA      | Language override (defaults to Home Assistant). |
+| `time_format`          | `'12'`/`'24'`   | HA      | Hour format override. |
 | `px_per_min`           | number          | `1.6`   | Vertical scale: pixels per minute. |
 | `height_vh`            | number          | `80`    | Scroll area height in viewport units. |
 | `header_compact`       | boolean         | `false` | Smaller top header. |
@@ -137,6 +141,7 @@ The most useful docs live in the `/docs` directory:
 - **[Architecture](docs/ARCHITECTURE.md)** – How the card is structured and how data flows.
 - **[Development Guide](docs/DEVELOPMENT.md)** – Local dev, building, linting, and release process.
 - **[Troubleshooting](docs/TROUBLESHOOTING.md)** – Common issues and fixes.
+- **[Internationalization](docs/I18N.md)** – Add or update translations.
 
 ### Architecture Decision Records (ADRs)
 

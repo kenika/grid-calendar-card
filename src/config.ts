@@ -15,6 +15,7 @@ export type MultiCalendarGridCardConfig = {
   slot_max_time?: string;
   slot_minutes?: number;
   locale?: string;
+  time_format?: "12" | "24";
   show_now_indicator?: boolean;
   show_all_day?: boolean;
 
@@ -40,7 +41,6 @@ export const DEFAULTS: Required<
     | "slot_min_time"
     | "slot_max_time"
     | "slot_minutes"
-    | "locale"
     | "show_now_indicator"
     | "show_all_day"
     | "height_vh"
@@ -55,7 +55,6 @@ export const DEFAULTS: Required<
   slot_min_time: "07:00:00",
   slot_max_time: "22:00:00",
   slot_minutes: 30,
-  locale: "en",
   show_now_indicator: true,
   show_all_day: true,
   height_vh: 80,
