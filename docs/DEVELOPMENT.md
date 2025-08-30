@@ -13,15 +13,15 @@ npm ci
 ## Build (production)
 ```bash
 npm run build
-# Output: dist/multi-calendar-grid-card_lit_<hash>.js
+# Output: dist/multi-calendar-grid-card.js
 ```
 
 ## Dev workflow with Home Assistant
 1. Copy the built JS to HA (dev copy recommended):
-   - HA path: `/config/www/dev/multi-calendar-grid-card.dev.js`
+   - HA path: `/config/www/dev/multi-calendar-grid-card.js`
    - Or keep the production copy in `/config/www/multi-calendar-grid-card/multi-calendar-grid-card.js`
 2. In **Settings → Dashboards → Resources**, add (or edit) a resource:
-   - URL: `/local/dev/multi-calendar-grid-card.dev.js`
+   - URL: `/local/dev/multi-calendar-grid-card.js`
    - Type: `JavaScript Module`
 3. Add the card to your dashboard YAML:
    ```yaml
@@ -40,19 +40,13 @@ npm run build
    ```
 4. Hard-refresh the dashboard (disable cache) after each change.
 
-### Weather addon (optional)
-- Add a resource for the addon script (e.g., `/local/dev/mcg-weather-addon.dev.js`).
-- Ensure it loads **after** the card resource.
-- No YAML needed beyond setting `weather_entity` in the card config.
-
 ## Lint & Typecheck
 ```bash
 npm run lint
-npm run typecheck
+npm run check
 ```
 
 ## Release
 - Update `CHANGELOG.md`.
 - `npm run build`.
-- Attach `dist/multi-calendar-grid-card_lit_<hash>.js` to the GitHub Release.
-- Update README installation snippet if the filename changed.
+- Attach `dist/multi-calendar-grid-card.js` to the GitHub Release.
