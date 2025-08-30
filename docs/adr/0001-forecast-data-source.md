@@ -11,7 +11,7 @@ We need daily forecast per day header. Across HA versions/integrations we observ
 - Some `weather.*` entities **don’t expose** `forecast` attributes in state.
 
 ## Decision
-Implement a tolerant, layered fetch (in the **weather addon**, not in core):
+Implement a tolerant, layered fetch within the card:
 
 1. **WebSocket service**: try `domain: "weather", service: "get_forecasts"` with `return_response: true`.
 2. **Simple REST**: try `GET /api/weather/forecast?entity_id=<id>&type=daily` (works on many local installs).
@@ -21,7 +21,7 @@ If all fail, render a compact “no forecast” placeholder but keep the card fu
 
 ## Consequences
 - Users on HA Cloud or with certain weather integrations still get a result via attributes or hourly aggregation.
-- Weather code lives in a separate addon file so we can iterate without shipping breaking changes in the main card.
+- Weather logic lives in the main bundle; updates require a new card release.
 
 ## Alternatives considered
 - Hard-depend on a single service/endpoint: rejected (too brittle).
