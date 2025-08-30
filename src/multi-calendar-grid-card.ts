@@ -26,9 +26,11 @@ import {
 } from "./utils";
 import { fetchWeather, WxDaily } from "./weather";
 
+
 /** Public card type & version */
 export const CARD_TAG = "multi-calendar-grid-card";
 export const VERSION = "0.8.0";
+
 
 /** Event shaping */
 type CalEventRaw = any;
