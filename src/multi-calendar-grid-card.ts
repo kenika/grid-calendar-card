@@ -4,178 +4,30 @@
  */
 
 import { LitElement, css, html, nothing } from "lit";
+import {
+  EntityCfg,
+  MultiCalendarGridCardConfig,
+  DEFAULTS,
+} from "./config";
+import { tr } from "./i18n";
+import {
+  clamp,
+  isHHMMSS,
+  toMinutes,
+  addMinutes,
+  startOfWeek,
+  startOfDay,
+  sameYMD,
+  colorToHex,
+  fgOn,
+  rgba,
+  dayKey,
+  condIcon,
+} from "./utils";
 
 /** Public card type & version */
 export const CARD_TAG = "multi-calendar-grid-card";
 export const VERSION = "0.8.0";
-
-/** Config */
-export type EntityCfg = {
-  entity: string;
-  name?: string;
-  color?: string;
-};
-export type MultiCalendarGridCardConfig = {
-  type?: string;
-  entities: EntityCfg[];
-
-  /** TIME GRID */
-  first_day?: number | "today"; // kept for backwards-compat; see start_today
-  start_today?: boolean;        // NEW: defaults true; start 7-day window at "today"
-  slot_min_time?: string;       // "07:00:00"
-  slot_max_time?: string;       // "22:00:00"
-  slot_minutes?: number;        // 30..180
-  locale?: string;
-  show_now_indicator?: boolean;
-  show_all_day?: boolean;
-
-  /** LAYOUT */
-  header_compact?: boolean;
-  height_vh?: number;
-  px_per_min?: number;
-  remember_offset?: boolean;
-  storage_key?: string;
-
-  /** DATA */
-  data_refresh_minutes?: number;
-
-  /** WEATHER */
-  weather_entity?: string;
-  weather_days?: number;      // default 7
-  weather_compact?: boolean;  // (placeholder, future formatting toggle)
-};
-
-const DEFAULTS: Required<Pick<
-  MultiCalendarGridCardConfig,
-  | "slot_min_time"
-  | "slot_max_time"
-  | "slot_minutes"
-  | "locale"
-  | "show_now_indicator"
-  | "show_all_day"
-  | "height_vh"
-  | "remember_offset"
-  | "header_compact"
-  | "data_refresh_minutes"
-  | "px_per_min"
-  | "storage_key"
-  | "start_today"
->> = {
-  slot_min_time: "07:00:00",
-  slot_max_time: "22:00:00",
-  slot_minutes: 30,
-  locale: "en",
-  show_now_indicator: true,
-  show_all_day: true,
-  height_vh: 80,
-  remember_offset: true,
-  header_compact: false,
-  data_refresh_minutes: 5,
-  px_per_min: 1.6,
-  storage_key: `${CARD_TAG}.weekOffset`,
-  start_today: true, // NEW default
-};
-
-const STRINGS = {
-  en: {
-    prev: "Prev",
-    next: "Next",
-    today: "Today",
-    today_pill: "Today",
-    no_events: "No events in this range.",
-    event_details: "Event details",
-    close: "Close",
-    aria_prev_week: "Previous week",
-    aria_next_week: "Next week",
-    aria_today: "Go to current week",
-    failed_load_prefix: "Failed to load:",
-  },
-};
-function tr(lang: string | undefined, key: keyof typeof STRINGS["en"]): string {
-  const base = (lang || "en").split("-")[0] as keyof typeof STRINGS;
-  return STRINGS[base]?.[key] || STRINGS.en[key] || key;
-}
-
-/** Utils */
-const clamp = (n: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, n));
-const isHHMMSS = (v?: string) => /^\d{2}:\d{2}:\d{2}$/.test(String(v || ""));
-const toMinutes = (hhmmss: string) => {
-  const [H, M, S] = hhmmss.split(":").map(Number);
-  return H * 60 + M + (S || 0) / 60;
-};
-const addMinutes = (d: Date, mins: number) => {
-  const x = new Date(d);
-  x.setMinutes(x.getMinutes() + mins);
-  return x;
-};
-const startOfWeek = (d: Date, firstDay: number) => {
-  const x = new Date(d);
-  const s = (x.getDay() + 7 - (firstDay % 7)) % 7;
-  x.setHours(0, 0, 0, 0);
-  x.setDate(x.getDate() - s);
-  return x;
-};
-const startOfDay = (d: Date) => {
-  const x = new Date(d);
-  x.setHours(0, 0, 0, 0);
-  return x;
-};
-const sameYMD = (a: Date, b: Date) =>
-  a.getFullYear() === b.getFullYear() &&
-  a.getMonth() === b.getMonth() &&
-  a.getDate() === b.getDate();
-
-const colorToHex = (raw?: string) => {
-  const t = String(raw || "").trim();
-  if (/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(t)) return t.toLowerCase();
-  if (/^rgba?\(/.test(t) || /^var\(--/.test(t)) return null; // cannot hex
-  return "#3366cc";
-};
-const fgOn = (hex: string) => {
-  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  const [r, g, b] = m ? [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)] : [51, 102, 204];
-  return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.6 ? "#111" : "#fff";
-};
-const rgba = (hex: string, a = 0.55) => {
-  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  const [r, g, b] = m ? [parseInt(m[1], 16), parseInt(m[2], 16), parseInt(m[3], 16)] : [51, 102, 204];
-  return `rgba(${r},${g},${b},${a})`;
-};
-const dayKey = (d: Date) => {
-  const x = startOfDay(d);
-  const y = x.getFullYear();
-  const m = String(x.getMonth() + 1).padStart(2, "0");
-  const dd = String(x.getDate()).padStart(2, "0");
-  return `${y}-${m}-${dd}`;
-};
-
-/** HA condition → icon */
-const condIcon = (raw?: string) => {
-  const c = String(raw || "").toLowerCase().replace(/\s+/g, "");
-  const map: Record<string, string> = {
-    "clear-night": "mdi:weather-night",
-    cloudy: "mdi:weather-cloudy",
-    fog: "mdi:weather-fog",
-    hail: "mdi:weather-hail",
-    lightning: "mdi:weather-lightning",
-    "lightning-rainy": "mdi:weather-lightning-rainy",
-    partlycloudy: "mdi:weather-partly-cloudy",
-    pouring: "mdi:weather-pouring",
-    rainy: "mdi:weather-rainy",
-    snowy: "mdi:weather-snowy",
-    "snowy-rainy": "mdi:weather-snowy-rainy",
-    sunny: "mdi:weather-sunny",
-    windy: "mdi:weather-windy",
-    "windy-variant": "mdi:weather-windy-variant",
-    exceptional: "mdi:weather-alert",
-  };
-  const norm = c
-    .replace("overcast", "cloudy")
-    .replace("partlysunny", "partlycloudy")
-    .replace("mostlycloudy", "partlycloudy")
-    .replace("drizzle", "rainy");
-  return map[norm] || map[c] || "mdi:weather-cloudy";
-};
 
 /** Weather fetch (robust) */
 type WItem = {
