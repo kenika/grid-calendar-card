@@ -120,8 +120,8 @@ weather_compact: false     # false = show icon + hi/low; true = tighter
 
 ```bash
 npm ci
-npm run dev     # local dev
 npm run lint    # lint (no warnings allowed in CI)
+npm run check   # typecheck
 npm run build   # produces bundle(s) in dist/
 ```
 

@@ -1,18 +1,18 @@
 {
   "name": "multi-calendar-grid-card",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Home Assistant Lovelace card: Multi-Calendar Grid Card (Lit + TypeScript)",
   "private": true,
   "type": "module",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kenika/multi-calendar-grid-card.git"
+    "url": "https://github.com/kenika/grid-calendar-card.git"
   },
   "bugs": {
-    "url": "https://github.com/kenika/multi-calendar-grid-card/issues"
+    "url": "https://github.com/kenika/grid-calendar-card/issues"
   },
-  "homepage": "https://github.com/kenika/multi-calendar-grid-card#readme",
+  "homepage": "https://github.com/kenika/grid-calendar-card#readme",
   "engines": {
     "node": ">=18"
   },

@@ -1,17 +1,8 @@
 # Troubleshooting
 
-## Weather shows twice in day headers
-- Likely the weather addon loaded **twice** (duplicate resource).
-- Fix: Keep a single addon resource; hard refresh.
-
 ## No weather shown
 - Verify card YAML has `weather_entity`.
-- Open devtools console and run:
-  ```js
-  customElements.get('multi-calendar-grid-card')
-  window.multiCalendarGrid
-  ```
-  The addon registers itself; if not present, the resource didn’t load.
+- Open devtools console for warnings about weather fetch failures.
 - HA Cloud (Nabu Casa) can return `400`/`404` for `weather.get_forecast(s)` or `/api/weather/forecast`. See ADR-0001 for the fallback logic we use.
 
 ## “Unknown command” / `400` / `404` on weather calls

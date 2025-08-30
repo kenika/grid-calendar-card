@@ -1,6 +1,6 @@
 /* Multi-Calendar Grid Card
  * Native weather headers + start_today logic
- * Version: 0.8.0-dev.3 (no decorators build)
+ * Version: 0.8.0
  */
 
 import { LitElement, css, html, nothing } from "lit";
