@@ -25,6 +25,14 @@ import {
   condIcon,
 } from "./utils";
 import { fetchWeather, WxDaily } from "./weather";
+import {
+  detectLang,
+  detectHourCycle,
+  shortDate,
+  weekdayDate,
+  formatRange,
+  time,
+} from "./locale";
 
 
 /** Public card type & version */
@@ -403,7 +411,8 @@ export class MultiCalendarGridCard extends LitElement {
 
     if (myFetch === this._lastFetchId) {
       this._days = days;
-      this._error = failed.length ? `${tr(this._lang(), "failed_load_prefix")} ${failed.join(", ")}` : null;
+      const lang = detectLang(this.hass, this._config.locale);
+      this._error = failed.length ? `${tr(lang, "failed_load_prefix")} ${failed.join(", ")}` : null;
     }
   }
 
@@ -442,36 +451,12 @@ export class MultiCalendarGridCard extends LitElement {
   }
 
   /** Render helpers */
-  private _lang() {
-    const l = this?.hass?.locale;
-    return this._config.locale || l?.language || "en";
-  }
-
-  private _fmtRange(s: Date, e: Date, allDay: boolean) {
-    const loc = this?.hass?.locale;
-    const lang = this._config.locale || loc?.language || "en";
-    if (allDay) {
-      const fmt = new Intl.DateTimeFormat(lang, { weekday: "short", day: "2-digit", month: "short" });
-      const same = s.toDateString() === e.toDateString();
-      const endAdj = new Date(e.getFullYear(), e.getMonth(), e.getDate());
-      endAdj.setMilliseconds(-1);
-      return same ? `${fmt.format(s)}` : `${fmt.format(s)} → ${fmt.format(endAdj)}`;
-    }
-    const cycle = loc?.time_format === "12" ? "h12" : "h23";
-    const tf = new Intl.DateTimeFormat(lang, { hour: "2-digit", minute: "2-digit", hourCycle: cycle });
-    const df = new Intl.DateTimeFormat(lang, { weekday: "short", day: "2-digit", month: "short" });
-    if (s.toDateString() === e.toDateString()) {
-      return `${df.format(s)} • ${tf.format(s)}–${tf.format(e)}`;
-    }
-    return `${df.format(s)} ${tf.format(s)} → ${df.format(e)} ${tf.format(e)}`;
-  }
 
   /** Template */
   render() {
     const start = this._weekAnchor;
     const end = addMinutes(new Date(start), 7 * 24 * 60 - 1);
-    const lang = this._lang();
-    const rf = new Intl.DateTimeFormat(lang, { day: "2-digit", month: "short" });
+    const lang = detectLang(this.hass, this._config.locale);
     const vh = Number(this._config.height_vh || DEFAULTS.height_vh);
 
     return html`
@@ -481,7 +466,7 @@ export class MultiCalendarGridCard extends LitElement {
             ${this._config.entities.map((e) => this._legendItem(e))}
           </div>
           <div class="badge" title="${this._error ? this._error : ""}">
-            ${rf.format(start)} – ${rf.format(end)}
+            ${shortDate(start, lang)} – ${shortDate(end, lang)}
           </div>
           <div class="toolbar">
             <button type="button" aria-label="${tr(lang, "aria_prev_week")}" @click=${() => this._shiftWeek(-1)}>${tr(
@@ -505,7 +490,7 @@ export class MultiCalendarGridCard extends LitElement {
         <div class="scroll" style=${`--mcg-height:${vh}vh`} @scroll=${this._persistScroll}>
           <div class="grid">
             ${this._timeColumn()}
-            ${this._dayColumns(start)}
+            ${this._dayColumns(start, lang)}
           </div>
         </div>
 
@@ -543,19 +528,25 @@ export class MultiCalendarGridCard extends LitElement {
     const ticks: unknown[] = [];
     const pxPerMin = Number(this._config.px_per_min) || DEFAULTS.px_per_min;
     const step = Number(this._config.slot_minutes) || DEFAULTS.slot_minutes;
+    const lang = detectLang(this.hass, this._config.locale);
+    const cycle = detectHourCycle(this.hass, this._config.time_format);
     for (let m = 0; m <= 1440; m += step) {
       const top = Math.round(m * pxPerMin);
       ticks.push(html`<div class=${m % 60 === 0 ? "tick" : "tick minor"} style=${`top:${top}px`}></div>`);
       if (m % 60 === 0) {
-        ticks.push(
-          html`<div class="hour-label" style=${`top:${top - 8}px`}>${String(Math.floor(m / 60)).padStart(2, "0")}:00</div>`
-        );
+        const date = new Date();
+        date.setHours(Math.floor(m / 60), 0, 0, 0);
+        ticks.push(html`<div class="hour-label" style=${`top:${top - 8}px`}>${time(
+          date,
+          lang,
+          cycle,
+        )}</div>`);
       }
     }
     return html`<div class="timecol" style="grid-column:1/2; grid-row:1/-1; position:relative">${ticks}</div>`;
   }
 
-  private _dayColumns(start: Date) {
+  private _dayColumns(start: Date, lang: string) {
     const out: unknown[] = [];
     const pxPerMin = Number(this._config.px_per_min) || DEFAULTS.px_per_min;
     const columnHeight = Math.round(1440 * pxPerMin);
@@ -565,8 +556,7 @@ export class MultiCalendarGridCard extends LitElement {
       const date = addMinutes(start, d * 24 * 60);
       const isToday = sameYMD(date, today);
       const day = this._days[d];
-      const lang = this._lang();
-      const label = date.toLocaleDateString(lang, { weekday: "short", day: "2-digit", month: "short" });
+      const label = weekdayDate(date, lang);
 
       const allDay = this._config.show_all_day
         ? html`<div class="allday">
@@ -607,7 +597,7 @@ export class MultiCalendarGridCard extends LitElement {
       out.push(html`
         <div class=${isToday ? "col today" : "col"} style=${`grid-column:${2 + d}/${3 + d}`}>
           <div class=${isToday ? "dayhdr today" : "dayhdr"}>
-            <div>${label} ${isToday ? html`<span class="today-pill">${tr(this._lang(), "today_pill")}</span>` : nothing}</div>
+            <div>${label} ${isToday ? html`<span class="today-pill">${tr(lang, "today_pill")}</span>` : nothing}</div>
             ${wx}
           </div>
           ${allDay}
@@ -664,27 +654,29 @@ export class MultiCalendarGridCard extends LitElement {
   private _renderDialog() {
     if (!this._dialogOpen || !this._dialogEvent) return nothing;
     const ev = this._dialogEvent;
+    const lang = detectLang(this.hass, this._config.locale);
+    const cycle = detectHourCycle(this.hass, this._config.time_format);
     const body = html`
       <div class="row"><strong>${ev.summary}</strong></div>
-      <div class="row">${this._fmtRange(ev.s, ev.e, ev.allDay)}</div>
+      <div class="row">${formatRange(ev.s, ev.e, ev.allDay, lang, cycle)}</div>
       ${ev.location ? html`<div class="row">${ev.location}</div>` : nothing}
       ${ev.description ? html`<div class="row">${ev.description}</div>` : nothing}
     `;
 
     if ((customElements as any).get("ha-dialog")) {
       return html`<ha-dialog .open=${this._dialogOpen} @closed=${() => this._closeDialog()}>
-        <div slot="heading">${tr(this._lang(), "event_details")}</div>
+        <div slot="heading">${tr(lang, "event_details")}</div>
         ${body}
-        <mwc-button slot="primaryAction" dialogAction="close">${tr(this._lang(), "close")}</mwc-button>
+        <mwc-button slot="primaryAction" dialogAction="close">${tr(lang, "close")}</mwc-button>
       </ha-dialog>`;
     }
 
     return html`<div class="overlay" @click=${(e: Event) => (e.target === e.currentTarget ? this._closeDialog() : null)}>
-      <div class="modal" role="dialog" aria-modal="true" aria-label="${tr(this._lang(), "event_details")}">
-        <h3>${tr(this._lang(), "event_details")}</h3>
+      <div class="modal" role="dialog" aria-modal="true" aria-label="${tr(lang, "event_details")}">
+        <h3>${tr(lang, "event_details")}</h3>
         ${body}
         <div class="actions">
-          <button class="btn" @click=${() => this._closeDialog()}>${tr(this._lang(), "close")}</button>
+          <button class="btn" @click=${() => this._closeDialog()}>${tr(lang, "close")}</button>
         </div>
       </div>
     </div>`;
