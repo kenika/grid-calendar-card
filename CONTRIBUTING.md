@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for your interest in improving Grid Calendar Card!
+Thanks for your interest in improving Multi-Calendar Grid Card!
 
 ## Development workflow
 1. Run `npm ci` to install dependencies.

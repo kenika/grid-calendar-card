@@ -2,21 +2,6 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
-### Added
-- Basic Lovelace editor so the card can be configured through the Home Assistant card picker.
-### Changed
-- Grid lines now have stronger contrast while remaining behind events.
-- Toolbar moved above the legend and spacing refined for a cleaner layout.
-- Locale selector is now a dropdown in the editor (`en`/`de`).
-- Default time format is 24-hour and the UI respects it for time inputs.
-- Renamed project and custom element tag to Grid Calendar Card (`grid-calendar-card`).
-### Removed
-- Legacy options `start_today`, `first_day`, `show_all_day`, `header_compact`, `weather_days`, `weather_compact`, and `storage_key`.
-- Renamed `slot_min_time`/`slot_max_time`/`slot_minutes` to `view_start_time`/`view_end_time`/`view_slot_minutes`.
-### Fixed
-- Editor no longer resets user settings and always loads the `ha-form` dependency.
-
 ## [0.8.1] - 2025-08-31
 ### Added
 - Internationalization support. ([#7](https://github.com/kenika/grid-calendar-card/pull/7), [#8](https://github.com/kenika/grid-calendar-card/pull/8))

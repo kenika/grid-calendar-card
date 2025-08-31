@@ -19,5 +19,5 @@ jobs:
       - run: npm run build
       - uses: actions/upload-artifact@v4
         with:
-          name: grid-calendar-card
-          path: dist/grid-calendar-card.js
+          name: multi-calendar-grid-card
+          path: dist/multi-calendar-grid-card.js

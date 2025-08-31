@@ -4,9 +4,9 @@ export const detectLang = (hass: any, cfgLocale?: string): string =>
   cfgLocale || hass?.locale?.language || "en";
 
 export const detectHourCycle = (
-  _hass: any,
+  hass: any,
   cfgTimeFormat?: string,
-): HourCycle => (cfgTimeFormat === "12" ? "h12" : "h23");
+): HourCycle => ((cfgTimeFormat || hass?.locale?.time_format) === "12" ? "h12" : "h23");
 
 export const shortDate = (d: Date, lang: string) =>
   new Intl.DateTimeFormat(lang, { day: "2-digit", month: "short" }).format(d);
