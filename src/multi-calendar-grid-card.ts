@@ -1,5 +1,5 @@
 /* Multi-Calendar Grid Card
- * Native weather headers + start_today logic
+ * Native weather headers
  * Version: 0.8.1
  */
 
@@ -15,7 +15,6 @@ import {
   isHHMMSS,
   toMinutes,
   addMinutes,
-  startOfWeek,
   startOfDay,
   sameYMD,
   colorToHex,
@@ -158,7 +157,6 @@ export class MultiCalendarGridCard extends LitElement {
       type: CARD_TAG,
       entities,
       ...DEFAULTS,
-      start_today: true,
     };
   }
 
@@ -173,11 +171,11 @@ export class MultiCalendarGridCard extends LitElement {
     if (!cfg || !Array.isArray(cfg.entities) || cfg.entities.length === 0) {
       throw new Error("Config must include at least one entity in 'entities'.");
     }
-    if (!isHHMMSS(cfg.slot_min_time)) throw new Error("slot_min_time must be HH:MM:SS");
-    if (!isHHMMSS(cfg.slot_max_time)) throw new Error("slot_max_time must be HH:MM:SS");
-    const sm = Number(cfg.slot_minutes ?? DEFAULTS.slot_minutes);
+    if (!isHHMMSS(cfg.view_start_time)) throw new Error("view_start_time must be HH:MM:SS");
+    if (!isHHMMSS(cfg.view_end_time)) throw new Error("view_end_time must be HH:MM:SS");
+    const sm = Number(cfg.view_slot_minutes ?? DEFAULTS.view_slot_minutes);
     if (!Number.isFinite(sm) || sm <= 0 || sm > 180) {
-      throw new Error("slot_minutes must be a number between 1 and 180.");
+      throw new Error("view_slot_minutes must be a number between 1 and 180.");
     }
 
     // Merge defaults
@@ -189,7 +187,6 @@ export class MultiCalendarGridCard extends LitElement {
     // Namespace for localStorage
     const nsKey = JSON.stringify({
       entities: this._config.entities.map((e) => e.entity).sort(),
-      start_today: this._config.start_today !== false,
     });
     this._nsBase = `${CARD_TAG}.${hash(nsKey)}`;
 
@@ -252,16 +249,8 @@ export class MultiCalendarGridCard extends LitElement {
 
   /** Week anchor (7-day window) */
   private _recomputeAnchor() {
-    const cfg = this._config!;
     const today = startOfDay(new Date());
-    let base: Date;
-
-    if (cfg.start_today !== false || cfg.first_day === "today" || (cfg as any).first_day === -1) {
-      base = startOfDay(today);
-    } else {
-      const first = typeof cfg.first_day === "number" ? cfg.first_day : 1; // default Monday
-      base = startOfWeek(today, first);
-    }
+    const base = startOfDay(today);
     base.setDate(base.getDate() + this._weekOffset * 7);
     this._weekAnchor = base;
   }
@@ -274,7 +263,7 @@ export class MultiCalendarGridCard extends LitElement {
   }
 
   private _restoreScroll() {
-    const minMin = toMinutes(this._config.slot_min_time!);
+    const minMin = toMinutes(this._config.view_start_time!);
     const pxPerMin = Number(this._config.px_per_min) || DEFAULTS.px_per_min;
     const defaultTop = Math.max(0, Math.round(minMin * pxPerMin) - 24);
     let top = defaultTop;
@@ -309,10 +298,9 @@ export class MultiCalendarGridCard extends LitElement {
       return;
     }
     this._wxUnit = this.hass.states?.[entity]?.attributes?.temperature_unit || "°";
-    const days = clamp(this._config.weather_days ?? 7, 1, 10);
     const fetchId = ++this._lastFetchId;
     try {
-      const map = await fetchWeather(this.hass, entity, days);
+      const map = await fetchWeather(this.hass, entity, 7);
       if (fetchId !== this._lastFetchId) return;
       this._wxByKey = map;
       this.requestUpdate();
@@ -373,7 +361,7 @@ export class MultiCalendarGridCard extends LitElement {
         const n = this._normalizeEvent(raw, raw.__id);
         if ((n.allDay ? new Date(n.e.getTime() - 1) : n.e) > dayStart && n.s < dayEnd) {
           if (n.allDay) {
-            if (this._config.show_all_day) alls.push(n);
+            alls.push(n);
           } else {
             const top = Math.max(0, (n.s.getTime() - dayStart.getTime()) / 60000);
             const bottom = Math.max(0, (n.e.getTime() - dayStart.getTime()) / 60000);
@@ -455,7 +443,7 @@ export class MultiCalendarGridCard extends LitElement {
     const vh = Number(this._config.height_vh || DEFAULTS.height_vh);
     const pxPerMin = Number(this._config.px_per_min) || DEFAULTS.px_per_min;
     const columnHeight = Math.round(1440 * pxPerMin);
-    const allDayHeight = this._config.show_all_day ? 32 : 0;
+    const allDayHeight = 32;
     const headerHeight = 42;
     const offset = headerHeight + allDayHeight;
     const gridHeight = columnHeight + offset;
@@ -526,7 +514,7 @@ export class MultiCalendarGridCard extends LitElement {
   private _timeColumn(offset: number, height: number) {
     const ticks: unknown[] = [];
     const pxPerMin = Number(this._config.px_per_min) || DEFAULTS.px_per_min;
-    const step = Number(this._config.slot_minutes) || DEFAULTS.slot_minutes;
+    const step = Number(this._config.view_slot_minutes) || DEFAULTS.view_slot_minutes;
     const lang = detectLang(this.hass, this._config.locale);
     const cycle = detectHourCycle(this.hass, this._config.time_format);
     for (let m = 0; m <= 1440; m += step) {
@@ -563,13 +551,11 @@ export class MultiCalendarGridCard extends LitElement {
       const day = this._days[d];
       const label = weekdayDate(date, lang);
 
-      const allDay = this._config.show_all_day
-        ? html`<div class="allday" style=${`height:${allDayHeight}px`}>
-            ${(day?.allDay || []).map(
-              (ev) => html`<div class="pill" @click=${() => this._open(ev)}>${ev.summary}</div>`
-            )}
-          </div>`
-        : nothing;
+      const allDay = html`<div class="allday" style=${`height:${allDayHeight}px`}>
+        ${(day?.allDay || []).map(
+          (ev) => html`<div class="pill" @click=${() => this._open(ev)}>${ev.summary}</div>`
+        )}
+      </div>`;
 
       const laneCount = day?.laneCount || 1;
       const timed = (day?.timed || []).map((ev) => {

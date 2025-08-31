@@ -1,6 +1,6 @@
 # ADR 0002 — Week Start = Today
 
-**Status**: Accepted  
+**Status**: Superseded by ADR 0005
 **Date**: 2025-08-28
 
 ## Context

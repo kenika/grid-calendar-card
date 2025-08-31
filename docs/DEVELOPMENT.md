@@ -30,14 +30,11 @@ npm run build
      - entity: calendar.example
        name: Example
        color: '#3f51b5'
-   first_day: today
-   slot_min_time: '07:00:00'
-   slot_max_time: '22:00:00'
+   view_start_time: '07:00:00'
+   view_end_time: '22:00:00'
    px_per_min: 0.8
    weather_entity: weather.integra_langsbau_1_3
-   weather_days: 7
-   weather_compact: false
-   ```
+  ```
 4. Hard-refresh the dashboard (disable cache) after each change.
 
 ## Lint & Typecheck
