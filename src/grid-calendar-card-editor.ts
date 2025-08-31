@@ -124,6 +124,9 @@ export class GridCalendarCardEditor extends LitElement {
     ev.stopPropagation();
     const value = ev.detail.value as GridCalendarCardConfig;
     const config: any = { ...this._config, ...value };
+    if (!value.entities || value.entities.length === 0) {
+      config.entities = this._config.entities;
+    }
     this._config = config;
     this.dispatchEvent(
       new CustomEvent("config-changed", {
