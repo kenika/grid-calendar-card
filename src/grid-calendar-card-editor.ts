@@ -14,7 +14,7 @@ export class GridCalendarCardEditor extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    window.loadHaForm?.();
+    window.loadHaForm?.().then(() => this.requestUpdate());
   }
 
   private _schema: any = [
