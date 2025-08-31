@@ -1,10 +1,10 @@
 import { LitElement, html, css, nothing } from "lit";
-import { DEFAULTS, MultiCalendarGridCardConfig } from "./config";
+import { DEFAULTS, GridCalendarCardConfig } from "./config";
 
-/** Simple ha-form based editor for Multi-Calendar Grid Card */
-export class MultiCalendarGridCardEditor extends LitElement {
+/** Simple ha-form based editor for Grid Calendar Card */
+export class GridCalendarCardEditor extends LitElement {
   hass?: any;
-  private _config: MultiCalendarGridCardConfig = { entities: [] };
+  private _config: GridCalendarCardConfig = { entities: [] };
 
   private _schema: any = [
     {
@@ -38,7 +38,7 @@ export class MultiCalendarGridCardEditor extends LitElement {
     }
   `;
 
-  setConfig(config: MultiCalendarGridCardConfig): void {
+  setConfig(config: GridCalendarCardConfig): void {
     this._config = { ...config };
   }
 
@@ -57,7 +57,7 @@ export class MultiCalendarGridCardEditor extends LitElement {
 
   private _valueChanged(ev: CustomEvent) {
     ev.stopPropagation();
-    const value = ev.detail.value as MultiCalendarGridCardConfig;
+    const value = ev.detail.value as GridCalendarCardConfig;
     const config: any = { ...value };
     // Remove defaults to keep YAML tidy
     Object.entries(DEFAULTS).forEach(([k, v]) => {
@@ -75,7 +75,7 @@ export class MultiCalendarGridCardEditor extends LitElement {
 }
 
 customElements.define(
-  "multi-calendar-grid-card-editor",
-  MultiCalendarGridCardEditor
+  "grid-calendar-card-editor",
+  GridCalendarCardEditor
 );
 
