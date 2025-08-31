@@ -14,7 +14,11 @@ export class GridCalendarCardEditor extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    window.loadHaForm?.().then(() => this.requestUpdate());
+    const load = window.loadHaForm
+      ? window.loadHaForm()
+      : // @ts-ignore
+        new Function("return import('../../../src/components/ha-form/ha-form')")();
+    load.then(() => this.requestUpdate());
   }
 
   private _schema: any = [
@@ -36,12 +40,19 @@ export class GridCalendarCardEditor extends LitElement {
       name: "view_start_time",
       label: "View start time",
       selector: { time: {} },
+      default: DEFAULTS.view_start_time,
     },
-    { name: "view_end_time", label: "View end time", selector: { time: {} } },
+    {
+      name: "view_end_time",
+      label: "View end time",
+      selector: { time: {} },
+      default: DEFAULTS.view_end_time,
+    },
     {
       name: "view_slot_minutes",
       label: "View slot minutes",
       selector: { number: { min: 1, max: 180 } },
+      default: DEFAULTS.view_slot_minutes,
     },
     {
       name: "locale",
@@ -60,31 +71,37 @@ export class GridCalendarCardEditor extends LitElement {
       name: "time_format",
       label: "Time format",
       selector: { select: { options: ["12", "24"], mode: "dropdown" } },
+      default: DEFAULTS.time_format,
     },
     {
       name: "show_now_indicator",
       label: "Show now indicator",
       selector: { boolean: {} },
+      default: DEFAULTS.show_now_indicator,
     },
     {
       name: "height_vh",
       label: "Height (vh)",
       selector: { number: { min: 10, max: 200 } },
+      default: DEFAULTS.height_vh,
     },
     {
       name: "px_per_min",
       label: "Pixels per minute",
       selector: { number: { min: 0.1, max: 10, step: 0.1 } },
+      default: DEFAULTS.px_per_min,
     },
     {
       name: "remember_offset",
       label: "Remember offset",
       selector: { boolean: {} },
+      default: DEFAULTS.remember_offset,
     },
     {
       name: "data_refresh_minutes",
       label: "Data refresh minutes",
       selector: { number: { min: 1, max: 60 } },
+      default: DEFAULTS.data_refresh_minutes,
     },
     {
       name: "weather_entity",
@@ -105,10 +122,13 @@ export class GridCalendarCardEditor extends LitElement {
 
   render() {
     if (!this.hass) return nothing;
-    const data = { ...DEFAULTS, ...this._config } as any;
+    const data = this._config as any;
     const hass = {
       ...this.hass,
-      locale: { ...this.hass.locale, time_format: data.time_format },
+      locale: {
+        ...this.hass.locale,
+        time_format: data.time_format ?? DEFAULTS.time_format,
+      },
     };
     return html`
       <ha-form
