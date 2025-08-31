@@ -160,10 +160,9 @@ export class MultiCalendarGridCard extends LitElement {
     };
   }
 
-  static getConfigElement() {
-    const el = document.createElement("div");
-    el.innerHTML = `<div style="padding:8px">Use YAML to configure this card. Editor coming later. (v${VERSION})</div>`;
-    return el;
+  static async getConfigElement() {
+    await import("./multi-calendar-grid-card-editor");
+    return document.createElement("multi-calendar-grid-card-editor");
   }
 
   /** Config */
