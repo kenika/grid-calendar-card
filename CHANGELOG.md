@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.8.1] - 2025-08-31
+### Added
+- Internationalization support. ([#7](https://github.com/kenika/grid-calendar-card/pull/7), [#8](https://github.com/kenika/grid-calendar-card/pull/8))
+
+### Changed
+- Release workflow builds and uploads assets automatically. ([#9](https://github.com/kenika/grid-calendar-card/pull/9), [#10](https://github.com/kenika/grid-calendar-card/pull/10))
+
 ## [0.8.0] - 2025-08-28
 ### Added
 - **Daily weather in day headers** via `weather_entity`, `weather_days`, `weather_compact`.

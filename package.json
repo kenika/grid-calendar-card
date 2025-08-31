@@ -1,6 +1,6 @@
 {
   "name": "multi-calendar-grid-card",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Home Assistant Lovelace card: Multi-Calendar Grid Card (Lit + TypeScript)",
   "private": true,
   "type": "module",
