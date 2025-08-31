@@ -42,7 +42,13 @@ Grab `multi-calendar-grid-card.js` from the latest GitHub Release and place it a
 
 ---
 
-## Configuration (YAML)
+## Configuration
+
+### Configuration (UI)
+
+The card includes a basic editor and appears in Home Assistant's card picker. Use **Add Card → Multi-Calendar Grid Card** and configure options through the form. Advanced setups can still be done in YAML as documented below.
+
+### Configuration (YAML)
 
 Add the card to a view:
 
