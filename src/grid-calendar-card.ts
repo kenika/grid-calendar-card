@@ -154,7 +154,7 @@ export class GridCalendarCard extends LitElement {
           }))
         : [{ entity: "calendar.calendar", name: "Calendar", color: palette[0] }];
     return {
-      type: CARD_TAG,
+      type: `custom:${CARD_TAG}`,
       entities,
       ...DEFAULTS,
     };
