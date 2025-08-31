@@ -56,9 +56,13 @@ export class GridCalendarCardEditor extends LitElement {
   render() {
     if (!this.hass) return nothing;
     const data = { ...DEFAULTS, ...this._config } as any;
+    const hass = {
+      ...this.hass,
+      locale: { ...this.hass.locale, time_format: data.time_format },
+    };
     return html`
       <ha-form
-        .hass=${this.hass}
+        .hass=${hass}
         .data=${data}
         .schema=${this._schema}
         @value-changed=${this._valueChanged}
@@ -70,10 +74,6 @@ export class GridCalendarCardEditor extends LitElement {
     ev.stopPropagation();
     const value = ev.detail.value as GridCalendarCardConfig;
     const config: any = { ...this._config, ...value };
-    // Remove defaults to keep YAML tidy
-    Object.entries(DEFAULTS).forEach(([k, v]) => {
-      if (config[k] === v) delete config[k];
-    });
     this._config = config;
     this.dispatchEvent(
       new CustomEvent("config-changed", {
