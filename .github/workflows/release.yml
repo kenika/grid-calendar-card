@@ -22,4 +22,4 @@ jobs:
       - run: npm run build
       - uses: softprops/action-gh-release@v1
         with:
-          files: dist/multi-calendar-grid-card.js
+          files: dist/grid-calendar-card.js
