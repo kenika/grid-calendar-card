@@ -6,7 +6,7 @@ export type EntityCfg = {
 
 export type GridCalendarCardConfig = {
   type?: string;
-  entities: EntityCfg[];
+  entities?: EntityCfg[];
 
   /** VIEW */
   view_start_time?: string;
