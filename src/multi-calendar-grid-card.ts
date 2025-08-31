@@ -28,7 +28,6 @@ import { fetchWeather, WxDaily } from "./weather";
 import {
   detectLang,
   detectHourCycle,
-  shortDate,
   weekdayDate,
   formatRange,
   time,
@@ -102,10 +101,7 @@ export class MultiCalendarGridCard extends LitElement {
     ha-card{border-radius:16px; overflow:hidden}
     .hdr{display:flex; justify-content:space-between; align-items:center; gap:14px; margin:12px}
     .legend{display:flex; gap:12px; flex-wrap:wrap; font-size:14px}
-    .legend .item{display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; padding:6px 10px; border-radius:999px}
-    .legend .dot{width:14px; height:14px; border-radius:50%; display:inline-block}
-    .legend .inactive{opacity:0.4; filter:grayscale(0.2)}
-    .badge{border-radius:999px; padding:5px 14px; font-size:13px; background:var(--secondary-background-color, rgba(0,0,0,0.06)); color:var(--primary-text-color,#111)}
+    .legend .item{display:flex; align-items:center; cursor:pointer; user-select:none; padding:6px 10px; border-radius:999px}
     .toolbar button{all:unset; cursor:pointer; padding:7px 14px; border-radius:999px; background:rgba(0,0,0,.06)}
     .toolbar button:focus{outline:2px solid var(--primary-color)}
     .error{color:#fff; background:#d32f2f; padding:6px 10px; border-radius:8px; font-size:12px; margin:0 12px 8px}
@@ -113,10 +109,10 @@ export class MultiCalendarGridCard extends LitElement {
     .scroll{height: var(--mcg-height, 80vh); margin: 0 12px 12px; overflow-y:auto; overscroll-behavior:contain; border:1px solid var(--divider-color,#e0e0e0); border-radius:12px; background:var(--divider-color,#e0e0e0)}
     .grid{position:relative; display:grid; grid-template-columns:70px repeat(7,1fr); gap:1px; background:var(--divider-color,#e0e0e0)}
     .col{background:var(--card-background-color,#fff); position:relative}
-    .col.today{outline:2px solid var(--primary-color); outline-offset:-2px}
+    .col.today, .col.today .dayhdr{background:#e3f2fd}
+    .col.weekend, .col.weekend .dayhdr{background:#f5f5f5}
     .dayhdr{position:sticky; top:0; background:var(--card-background-color,#fff); z-index:2; font-weight:800; padding:8px 10px; border-bottom:1px solid var(--divider-color,#e0e0e0); display:flex; align-items:center; justify-content:space-between; gap:8px}
-    .today-pill{border-radius:999px; background:#fff; color: var(--primary-color); font-size:10px; padding:2px 8px}
-    .allday{padding:6px 8px; display:flex; flex-wrap:wrap; gap:6px 6px; border-bottom:1px solid var(--divider-color,#e0e0e0)}
+    .allday{padding:6px 8px; display:flex; flex-wrap:wrap; gap:6px 6px; border-bottom:1px solid var(--divider-color,#e0e0e0); overflow:hidden}
     .pill{background: var(--secondary-background-color, rgba(0,0,0,.08)); color: var(--primary-text-color,#111); border-radius:10px; padding:2px 8px; font-size:12px; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
     .timecol{background:var(--card-background-color,#fff); position:relative}
     .tick{position:absolute; left:0; right:0; border-top:1px solid rgba(0,0,0,.1)}
@@ -455,18 +451,20 @@ export class MultiCalendarGridCard extends LitElement {
   /** Template */
   render() {
     const start = this._weekAnchor;
-    const end = addMinutes(new Date(start), 7 * 24 * 60 - 1);
     const lang = detectLang(this.hass, this._config.locale);
     const vh = Number(this._config.height_vh || DEFAULTS.height_vh);
+    const pxPerMin = Number(this._config.px_per_min) || DEFAULTS.px_per_min;
+    const columnHeight = Math.round(1440 * pxPerMin);
+    const allDayHeight = this._config.show_all_day ? 32 : 0;
+    const headerHeight = 42;
+    const offset = headerHeight + allDayHeight;
+    const gridHeight = columnHeight + offset;
 
     return html`
       <ha-card>
         <div class="hdr">
           <div class="legend">
             ${this._config.entities.map((e) => this._legendItem(e))}
-          </div>
-          <div class="badge" title="${this._error ? this._error : ""}">
-            ${shortDate(start, lang)} – ${shortDate(end, lang)}
           </div>
           <div class="toolbar">
             <button type="button" aria-label="${tr(lang, "aria_prev_week")}" @click=${() => this._shiftWeek(-1)}>${tr(
@@ -489,8 +487,8 @@ export class MultiCalendarGridCard extends LitElement {
 
         <div class="scroll" style=${`--mcg-height:${vh}vh`} @scroll=${this._persistScroll}>
           <div class="grid">
-            ${this._timeColumn()}
-            ${this._dayColumns(start, lang)}
+            ${this._timeColumn(offset, gridHeight)}
+            ${this._dayColumns(start, lang, columnHeight, allDayHeight, gridHeight)}
           </div>
         </div>
 
@@ -517,21 +515,22 @@ export class MultiCalendarGridCard extends LitElement {
       this.requestUpdate();
     };
 
-    const dot = e.color ? (colorToHex(e.color) ? e.color! : e.color!) : "#3366cc";
-    return html`<div class=${active ? "item" : "item inactive"} @click=${toggle}>
-      <span class="dot" style=${`background:${dot}`}></span>
+    const hex = e.color ? (colorToHex(e.color) ? e.color! : e.color!) : "#3366cc";
+    const bg = active ? hex : rgba(hex, 0.3);
+    const fg = active ? fgOn(hex) : "var(--primary-text-color,#111)";
+    return html`<div class="item" style=${`background:${bg};color:${fg}`} @click=${toggle}>
       <span>${e.name || e.entity}</span>
     </div>`;
   }
 
-  private _timeColumn() {
+  private _timeColumn(offset: number, height: number) {
     const ticks: unknown[] = [];
     const pxPerMin = Number(this._config.px_per_min) || DEFAULTS.px_per_min;
     const step = Number(this._config.slot_minutes) || DEFAULTS.slot_minutes;
     const lang = detectLang(this.hass, this._config.locale);
     const cycle = detectHourCycle(this.hass, this._config.time_format);
     for (let m = 0; m <= 1440; m += step) {
-      const top = Math.round(m * pxPerMin);
+      const top = Math.round(m * pxPerMin) + offset;
       ticks.push(html`<div class=${m % 60 === 0 ? "tick" : "tick minor"} style=${`top:${top}px`}></div>`);
       if (m % 60 === 0) {
         const date = new Date();
@@ -543,23 +542,29 @@ export class MultiCalendarGridCard extends LitElement {
         )}</div>`);
       }
     }
-    return html`<div class="timecol" style="grid-column:1/2; grid-row:1/-1; position:relative">${ticks}</div>`;
+    return html`<div class="timecol" style="grid-column:1/2; grid-row:1/-1; position:relative; height:${height}px">${ticks}</div>`;
   }
 
-  private _dayColumns(start: Date, lang: string) {
+  private _dayColumns(
+    start: Date,
+    lang: string,
+    columnHeight: number,
+    allDayHeight: number,
+    gridHeight: number,
+  ) {
     const out: unknown[] = [];
     const pxPerMin = Number(this._config.px_per_min) || DEFAULTS.px_per_min;
-    const columnHeight = Math.round(1440 * pxPerMin);
     const today = startOfDay(new Date());
 
     for (let d = 0; d < 7; d++) {
       const date = addMinutes(start, d * 24 * 60);
       const isToday = sameYMD(date, today);
+      const isWeekend = date.getDay() === 0 || date.getDay() === 6;
       const day = this._days[d];
       const label = weekdayDate(date, lang);
 
       const allDay = this._config.show_all_day
-        ? html`<div class="allday">
+        ? html`<div class="allday" style=${`height:${allDayHeight}px`}>
             ${(day?.allDay || []).map(
               (ev) => html`<div class="pill" @click=${() => this._open(ev)}>${ev.summary}</div>`
             )}
@@ -594,10 +599,14 @@ export class MultiCalendarGridCard extends LitElement {
 
       const wx = this._renderWeatherBand(date);
 
+      const classes = ["col"];
+      if (isToday) classes.push("today");
+      if (isWeekend) classes.push("weekend");
+
       out.push(html`
-        <div class=${isToday ? "col today" : "col"} style=${`grid-column:${2 + d}/${3 + d}`}>
-          <div class=${isToday ? "dayhdr today" : "dayhdr"}>
-            <div>${label} ${isToday ? html`<span class="today-pill">${tr(lang, "today_pill")}</span>` : nothing}</div>
+        <div class=${classes.join(" ")} style=${`grid-column:${2 + d}/${3 + d}`}>
+          <div class="dayhdr">
+            <div>${label}</div>
             ${wx}
           </div>
           ${allDay}
@@ -606,7 +615,7 @@ export class MultiCalendarGridCard extends LitElement {
       `);
     }
 
-    out.unshift(html`<style>.grid{height:${columnHeight}px}</style>`);
+    out.unshift(html`<style>.grid{height:${gridHeight}px}</style>`);
     return out;
   }
 
