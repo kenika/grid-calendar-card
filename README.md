@@ -40,6 +40,14 @@ Grab `multi-calendar-grid-card.js` from the latest GitHub Release and place it a
 
 > Tip: After updates, hard-refresh the browser (Ctrl/Cmd-Shift-R) to bust cache.
 
+If you manage your dashboard in `ui-lovelace.yaml`, add the resource at the top level:
+
+```yaml
+resources:
+  - url: /local/multi-calendar-grid-card/multi-calendar-grid-card.js
+    type: module
+```
+
 ---
 
 ## Configuration (YAML)
@@ -80,6 +88,8 @@ weather_entity: weather.integra_langsbau_1_3
 weather_days: 7            # default 7
 weather_compact: false     # false = show icon + hi/low; true = tighter
 ```
+
+> Legacy alias: `type: custom:grid-calendar-card` still works.
 
 ---
 

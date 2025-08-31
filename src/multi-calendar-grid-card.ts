@@ -37,6 +37,7 @@ import {
 
 /** Public card type & version */
 export const CARD_TAG = "multi-calendar-grid-card";
+export const LEGACY_TAG = "grid-calendar-card";
 export const VERSION = "0.8.1";
 
 
@@ -697,6 +698,7 @@ function hash(s: string): string {
 
 /** Define element (no decorator) and card registration */
 if (!customElements.get(CARD_TAG)) customElements.define(CARD_TAG, MultiCalendarGridCard as any);
+if (!customElements.get(LEGACY_TAG)) customElements.define(LEGACY_TAG, MultiCalendarGridCard as any);
 (window as any).customCards = (window as any).customCards || [];
 if (!(window as any).customCards.find((c: any) => c.type === CARD_TAG)) {
   (window as any).customCards.push({
