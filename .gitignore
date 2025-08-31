@@ -1,3 +1,5 @@
 node_modules/
 .DS_Store
 npm-debug.log*
+/grid-calendar-card.js
+/grid-calendar-card.js.map
