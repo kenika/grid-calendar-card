@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Basic Lovelace editor so the card can be configured through the Home Assistant card picker.
 ### Changed
+- Grid lines now render behind events with clearer contrast.
+- Header, legend spacing, and toolbar buttons adjusted for a cleaner layout.
+- Locale selector is now a dropdown in the editor (`en`/`de`).
+- Default time format is 24-hour and the UI respects it for time inputs.
 - Renamed project and custom element tag to Grid Calendar Card (`grid-calendar-card`).
 ### Removed
 - Legacy options `start_today`, `first_day`, `show_all_day`, `header_compact`, `weather_days`, `weather_compact`, and `storage_key`.

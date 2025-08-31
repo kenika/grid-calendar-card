@@ -19,7 +19,10 @@ export class GridCalendarCardEditor extends LitElement {
     { name: "view_start_time", selector: { time: {} } },
     { name: "view_end_time", selector: { time: {} } },
     { name: "view_slot_minutes", selector: { number: { min: 1, max: 180 } } },
-    { name: "locale", selector: { text: {} } },
+    {
+      name: "locale",
+      selector: { select: { options: ["en", "de"], mode: "dropdown" } },
+    },
     {
       name: "time_format",
       selector: { select: { options: ["12", "24"], mode: "dropdown" } },

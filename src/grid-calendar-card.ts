@@ -98,10 +98,10 @@ export class GridCalendarCard extends LitElement {
   static styles = css`
     :host{display:block}
     ha-card{border-radius:16px; overflow:hidden}
-    .hdr{display:flex; justify-content:space-between; align-items:center; gap:14px; margin:12px}
-    .legend{display:flex; gap:12px; flex-wrap:wrap; font-size:14px}
-    .legend .item{display:flex; align-items:center; cursor:pointer; user-select:none; padding:6px 10px; border-radius:999px}
-    .toolbar button{all:unset; cursor:pointer; padding:7px 14px; border-radius:999px; background:rgba(0,0,0,.06)}
+    .hdr{display:flex; justify-content:space-between; align-items:center; gap:16px; margin:16px 16px 0}
+    .legend{display:flex; gap:12px; flex-wrap:wrap; font-size:14px; margin:0 16px 12px}
+    .legend .item{display:flex; align-items:center; cursor:pointer; user-select:none; padding:8px 12px; border-radius:999px}
+    .toolbar button{all:unset; cursor:pointer; padding:8px 16px; border-radius:999px; background:rgba(0,0,0,.06)}
     .toolbar button:focus{outline:2px solid var(--primary-color)}
     .error{color:#fff; background:#d32f2f; padding:6px 10px; border-radius:8px; font-size:12px; margin:0 12px 8px}
     .empty{color:var(--secondary-text-color); padding:8px 12px; font-size:12px}
@@ -114,8 +114,8 @@ export class GridCalendarCard extends LitElement {
     .allday{padding:6px 8px; display:flex; flex-wrap:wrap; gap:6px 6px; border-bottom:1px solid var(--divider-color,#e0e0e0); overflow:hidden}
     .pill{background: var(--secondary-background-color, rgba(0,0,0,.08)); color: var(--primary-text-color,#111); border-radius:10px; padding:2px 8px; font-size:12px; max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
     .timecol{background:var(--card-background-color,#fff); position:relative}
-    .tick{position:absolute; left:0; right:0; border-top:1px solid rgba(0,0,0,.1)}
-    .tick.minor{border-top:1px dashed rgba(0,0,0,.08)}
+    .tick{position:absolute; left:0; right:0; border-top:1px solid rgba(0,0,0,.15)}
+    .tick.minor{border-top:1px dashed rgba(0,0,0,.1)}
     .hour-label{position:absolute; top:-8px; left:6px; font-size:12px; color:var(--secondary-text-color)}
     .body{position:relative}
     .event{position:absolute; border-radius:10px; padding:6px 8px; box-sizing:border-box; font-size:12px; line-height:1.15; overflow:hidden; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,.12)}
@@ -540,6 +540,11 @@ export class GridCalendarCard extends LitElement {
   ) {
     const out: unknown[] = [];
     const pxPerMin = Number(this._config.px_per_min) || DEFAULTS.px_per_min;
+    const slotPx =
+      (Number(this._config.view_slot_minutes) || DEFAULTS.view_slot_minutes) *
+      pxPerMin;
+    const hourPx = 60 * pxPerMin;
+    const bg = `background-image: repeating-linear-gradient(to bottom, rgba(0,0,0,.1) 0, rgba(0,0,0,.1) 1px, transparent 1px, transparent ${slotPx}px), repeating-linear-gradient(to bottom, rgba(0,0,0,.15) 0, rgba(0,0,0,.15) 1px, transparent 1px, transparent ${hourPx}px);`;
     const today = startOfDay(new Date());
 
     for (let d = 0; d < 7; d++) {
@@ -594,7 +599,7 @@ export class GridCalendarCard extends LitElement {
             ${wx}
           </div>
           ${allDay}
-          <div class="body" style=${`height:${columnHeight}px; position:relative`}>${timed}${nowLine}</div>
+          <div class="body" style=${`height:${columnHeight}px; position:relative; ${bg}`}>${timed}${nowLine}</div>
         </div>
       `);
     }

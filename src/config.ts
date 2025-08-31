@@ -34,6 +34,7 @@ export const DEFAULTS: Required<
     | "view_start_time"
     | "view_end_time"
     | "view_slot_minutes"
+    | "time_format"
     | "show_now_indicator"
     | "height_vh"
     | "remember_offset"
@@ -44,6 +45,7 @@ export const DEFAULTS: Required<
   view_start_time: "07:00:00",
   view_end_time: "22:00:00",
   view_slot_minutes: 30,
+  time_format: "24",
   show_now_indicator: true,
   height_vh: 80,
   remember_offset: true,

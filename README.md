@@ -86,8 +86,8 @@ weather_entity: weather.integra_langsbau_1_3
 | `view_start_time`      | `HH:MM:SS`      | `07:00:00` | Earliest visible hour. |
 | `view_end_time`        | `HH:MM:SS`      | `22:00:00` | Latest visible hour. |
 | `view_slot_minutes`    | number          | `30`    | Minor grid step in minutes (1–180). |
-| `locale`               | string          | HA      | Language override (defaults to Home Assistant). |
-| `time_format`          | `'12'`/`'24'`   | HA      | Hour format override. |
+| `locale`               | `'en'`/`'de'`   | HA      | Language override (defaults to Home Assistant). |
+| `time_format`          | `'12'`/`'24'`   | `24`    | Hour format override. |
 | `px_per_min`           | number          | `1.6`   | Vertical scale: pixels per minute. |
 | `height_vh`            | number          | `80`    | Scroll area height in viewport units. |
 | `show_now_indicator`   | boolean         | `true`  | Red “now” line when viewing the current week. |
