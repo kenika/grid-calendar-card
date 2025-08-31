@@ -47,3 +47,6 @@ npm run check
 - Update `CHANGELOG.md`.
 - `npm run build`.
 - Attach `dist/grid-calendar-card.js` to the GitHub Release.
+
+## Future multi-file HACS distribution
+If the project later delivers multiple JavaScript bundles (e.g. a main card and editor file), update the build script to output each file into the `dist/` folder and list the appropriate entry file in `hacs.json`. Ensure the CI pipeline uploads all generated bundles as release assets.
