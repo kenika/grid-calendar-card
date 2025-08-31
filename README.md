@@ -1,10 +1,10 @@
-# Multi-Calendar Grid Card
+# Grid Calendar Card
 
 A modern 7-day, time-grid calendar card for Home Assistant. Overlay multiple calendar entities, stack overlapping events, keep all-day events tidy in a pill row, and (optionally) show **daily weather in each day header**.
 
 **Tech:** Lit + TypeScript • Works in normal dashboards and kiosk displays.
 
-> Footer shows the running version. Example: `Multi-Calendar Grid Card v0.8.1`.
+> Footer shows the running version. Example: `Grid Calendar Card v0.8.1`.
 
 ---
 
@@ -18,36 +18,37 @@ A modern 7-day, time-grid calendar card for Home Assistant. Overlay multiple cal
 - **Internationalization support** (new in v0.8.1)
 - Remembered scroll offset (optional)
 - Lightweight, no external dependencies
-
 Tested on **Home Assistant 2025.8**. Should work on 2024.12+.
-
 ---
-
 ## Installation
-
 ### 1) Download the release asset
-Grab `multi-calendar-grid-card.js` from the latest GitHub Release and place it at:
+Grab `grid-calendar-card.js` from the latest GitHub Release and place it at:
 
 ```
-/config/www/multi-calendar-grid-card/multi-calendar-grid-card.js
+/config/www/grid-calendar-card/grid-calendar-card.js
 ```
 
 ### 2) Add a Lovelace resource
 **Settings → Dashboards → (⋮) Resources → + Add resource**
 
-- URL: `/local/multi-calendar-grid-card/multi-calendar-grid-card.js`
+- URL: `/local/grid-calendar-card/grid-calendar-card.js`
 - Resource type: **JavaScript Module**
 
 > Tip: After updates, hard-refresh the browser (Ctrl/Cmd-Shift-R) to bust cache.
 
 ---
 
-## Configuration (YAML)
+## Configuration
+
+### Configuration (UI)
+The card includes a basic editor and appears in Home Assistant's card picker. Use **Add Card → Grid Calendar Card** and configure options through the form. Advanced setups can still be done in YAML as documented below.
+
+### Configuration (YAML)
 
 Add the card to a view:
 
 ```yaml
-type: custom:multi-calendar-grid-card
+type: custom:grid-calendar-card
 entities:
   - entity: calendar.nuesken_family_gmail
     name: Family
@@ -58,7 +59,7 @@ entities:
   - entity: calendar.auri_nuesken_gmail_com
     name: Auri
     color: '#03a9f4'
-
+```
 # Time-grid & layout
 view_start_time: '07:00:00'
 view_end_time: '22:00:00'
@@ -119,7 +120,7 @@ npm run build   # produces bundle(s) in dist/
 ```
 
 For release, we typically upload a stable-named bundle:
-- `dist/multi-calendar-grid-card.js` (+ optional `.map`)
+- `dist/grid-calendar-card.js` (+ optional `.map`)
 
 ---
 
