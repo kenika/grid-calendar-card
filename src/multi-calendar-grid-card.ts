@@ -1,6 +1,6 @@
 /* Multi-Calendar Grid Card
  * Native weather headers + start_today logic
- * Version: 0.8.0
+ * Version: 0.8.1
  */
 
 import { LitElement, css, html, nothing } from "lit";
@@ -37,7 +37,7 @@ import {
 
 /** Public card type & version */
 export const CARD_TAG = "multi-calendar-grid-card";
-export const VERSION = "0.8.0";
+export const VERSION = "0.8.1";
 
 
 /** Event shaping */

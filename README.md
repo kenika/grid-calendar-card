@@ -4,7 +4,7 @@ A modern 7-day, time-grid calendar card for Home Assistant. Overlay multiple cal
 
 **Tech:** Lit + TypeScript • Works in normal dashboards and kiosk displays.
 
-> Footer shows the running version. Example: `Multi-Calendar Grid Card v0.8.0`.
+> Footer shows the running version. Example: `Multi-Calendar Grid Card v0.8.1`.
 
 ---
 
@@ -15,6 +15,7 @@ A modern 7-day, time-grid calendar card for Home Assistant. Overlay multiple cal
 - **“Today” indicator** line (optional)
 - **Rolling “today-first” week** (new in v0.8.0)
 - **Daily weather in day headers** (new in v0.8.0)
+- **Internationalization support** (new in v0.8.1)
 - Remembered scroll offset (optional)
 - Lightweight, no external dependencies
 
