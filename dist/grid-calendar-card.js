@@ -5,6 +5,7 @@
       display: block;
     }
   `}setConfig(e){this._config={entities:[],...e}}render(){if(!this.hass)return p;let e=this._config,i={...this.hass,locale:{...this.hass.locale,time_format:e.time_format??_.time_format}};return u`
+
       <ha-form
         .hass=${i}
         .data=${e}
@@ -93,6 +94,7 @@
         >
           <div class="title">${$.n.summary}</div>
         </div>`}),Xt=this._config.show_now_indicator&&this._weekOffset===0?this._nowLineForDay(f):p,te=this._renderWeatherBand(y),it=["col"];C&&it.push("today"),v&&it.push("weekend"),l.push(u`
+
         <div class=${it.join(" ")} style=${`grid-column:${2+f}/${3+f}`}>
           <div class="dayhdr">
             <div>${w}</div>
