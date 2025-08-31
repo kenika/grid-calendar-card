@@ -13,19 +13,19 @@ npm ci
 ## Build (production)
 ```bash
 npm run build
-# Output: dist/multi-calendar-grid-card.js
+# Output: dist/grid-calendar-card.js
 ```
 
 ## Dev workflow with Home Assistant
 1. Copy the built JS to HA (dev copy recommended):
-   - HA path: `/config/www/dev/multi-calendar-grid-card.js`
-   - Or keep the production copy in `/config/www/multi-calendar-grid-card/multi-calendar-grid-card.js`
+   - HA path: `/config/www/dev/grid-calendar-card.js`
+   - Or keep the production copy in `/config/www/grid-calendar-card/grid-calendar-card.js`
 2. In **Settings → Dashboards → Resources**, add (or edit) a resource:
-   - URL: `/local/dev/multi-calendar-grid-card.js`
+   - URL: `/local/dev/grid-calendar-card.js`
    - Type: `JavaScript Module`
 3. Add the card to your dashboard YAML:
    ```yaml
-   type: custom:multi-calendar-grid-card
+   type: custom:grid-calendar-card
    entities:
      - entity: calendar.example
        name: Example
@@ -46,4 +46,4 @@ npm run check
 ## Release
 - Update `CHANGELOG.md`.
 - `npm run build`.
-- Attach `dist/multi-calendar-grid-card.js` to the GitHub Release.
+- Attach `dist/grid-calendar-card.js` to the GitHub Release.

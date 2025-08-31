@@ -4,7 +4,7 @@ export type EntityCfg = {
   color?: string;
 };
 
-export type MultiCalendarGridCardConfig = {
+export type GridCalendarCardConfig = {
   type?: string;
   entities: EntityCfg[];
 
@@ -30,7 +30,7 @@ export type MultiCalendarGridCardConfig = {
 
 export const DEFAULTS: Required<
   Pick<
-    MultiCalendarGridCardConfig,
+    GridCalendarCardConfig,
     | "view_start_time"
     | "view_end_time"
     | "view_slot_minutes"

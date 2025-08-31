@@ -1,10 +1,10 @@
 # Architecture Overview
 
-**Multi-Calendar Grid Card** renders a 7-day time grid for multiple `calendar.*` entities and (optionally) overlays daily weather in each day header.
+**Grid Calendar Card** renders a 7-day time grid for multiple `calendar.*` entities and (optionally) overlays daily weather in each day header.
 
 ## Key parts
 
-- **Card (Lit element)**: `<multi-calendar-grid-card>`
+- **Card (Lit element)**: `<grid-calendar-card>`
   - Fetches events via Home Assistant REST API:
     `GET /api/calendars/<calendar.entity>?start=<ISO>&end=<ISO>`
   - Lays out all-day and timed events, computes lanes, draws “now” line.
