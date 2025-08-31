@@ -14,6 +14,14 @@ export const addMinutes = (d: Date, mins: number) => {
   return x;
 };
 
+export const startOfWeek = (d: Date, firstDay: number) => {
+  const x = new Date(d);
+  const s = (x.getDay() + 7 - (firstDay % 7)) % 7;
+  x.setHours(0, 0, 0, 0);
+  x.setDate(x.getDate() - s);
+  return x;
+};
+
 export const startOfDay = (d: Date) => {
   const x = new Date(d);
   x.setHours(0, 0, 0, 0);
