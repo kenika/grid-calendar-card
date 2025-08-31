@@ -18,13 +18,9 @@ A modern 7-day, time-grid calendar card for Home Assistant. Overlay multiple cal
 - **Internationalization support** (new in v0.8.1)
 - Remembered scroll offset (optional)
 - Lightweight, no external dependencies
-
 Tested on **Home Assistant 2025.8**. Should work on 2024.12+.
-
 ---
-
 ## Installation
-
 ### 1) Download the release asset
 Grab `grid-calendar-card.js` from the latest GitHub Release and place it at:
 
@@ -45,7 +41,6 @@ Grab `grid-calendar-card.js` from the latest GitHub Release and place it at:
 ## Configuration
 
 ### Configuration (UI)
-
 The card includes a basic editor and appears in Home Assistant's card picker. Use **Add Card → Grid Calendar Card** and configure options through the form. Advanced setups can still be done in YAML as documented below.
 
 ### Configuration (YAML)
@@ -64,7 +59,7 @@ entities:
   - entity: calendar.auri_nuesken_gmail_com
     name: Auri
     color: '#03a9f4'
-
+```
 # Time-grid & layout
 view_start_time: '07:00:00'
 view_end_time: '22:00:00'

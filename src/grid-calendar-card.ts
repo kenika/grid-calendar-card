@@ -159,7 +159,6 @@ export class GridCalendarCard extends LitElement {
       ...DEFAULTS,
     };
   }
-
   static async getConfigElement() {
     await import("./grid-calendar-card-editor");
     return document.createElement("grid-calendar-card-editor");
