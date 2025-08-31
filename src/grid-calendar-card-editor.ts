@@ -12,9 +12,9 @@ export class GridCalendarCardEditor extends LitElement {
   hass?: any;
   private _config: GridCalendarCardConfig = { entities: [] };
 
-  constructor() {
-    super();
-    window.loadHaForm?.();
+  connectedCallback() {
+    super.connectedCallback();
+    window.loadHaForm?.().then(() => this.requestUpdate());
   }
 
   private _schema: any = [
