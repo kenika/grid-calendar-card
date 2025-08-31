@@ -21,7 +21,15 @@ export class GridCalendarCardEditor extends LitElement {
     { name: "view_slot_minutes", selector: { number: { min: 1, max: 180 } } },
     {
       name: "locale",
-      selector: { select: { options: ["en", "de"], mode: "dropdown" } },
+      selector: {
+        select: {
+          options: [
+            { value: "en", label: "English" },
+            { value: "de", label: "Deutsch" },
+          ],
+          mode: "dropdown",
+        },
+      },
     },
     {
       name: "time_format",
@@ -61,7 +69,7 @@ export class GridCalendarCardEditor extends LitElement {
   private _valueChanged(ev: CustomEvent) {
     ev.stopPropagation();
     const value = ev.detail.value as GridCalendarCardConfig;
-    const config: any = { ...value };
+    const config: any = { ...this._config, ...value };
     // Remove defaults to keep YAML tidy
     Object.entries(DEFAULTS).forEach(([k, v]) => {
       if (config[k] === v) delete config[k];
