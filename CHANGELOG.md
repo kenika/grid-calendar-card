@@ -14,6 +14,8 @@ All notable changes to this project will be documented in this file.
 ### Removed
 - Legacy options `start_today`, `first_day`, `show_all_day`, `header_compact`, `weather_days`, `weather_compact`, and `storage_key`.
 - Renamed `slot_min_time`/`slot_max_time`/`slot_minutes` to `view_start_time`/`view_end_time`/`view_slot_minutes`.
+### Fixed
+- Editor no longer resets user settings and always loads the `ha-form` dependency.
 
 ## [0.8.1] - 2025-08-31
 ### Added
