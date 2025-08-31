@@ -31,6 +31,7 @@ import {
   formatRange,
   time,
 } from "./locale";
+import "./grid-calendar-card-editor";
 
 
 /** Public card type & version */
@@ -161,7 +162,6 @@ export class GridCalendarCard extends LitElement {
     };
   }
   static async getConfigElement() {
-    await import("./grid-calendar-card-editor");
     return document.createElement("grid-calendar-card-editor");
   }
 
