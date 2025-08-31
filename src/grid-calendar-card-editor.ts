@@ -50,7 +50,7 @@ export class GridCalendarCardEditor extends LitElement {
   `;
 
   setConfig(config: GridCalendarCardConfig): void {
-    this._config = { ...config };
+    this._config = { entities: [], ...config };
   }
 
   render() {

@@ -57,7 +57,7 @@ export class GridCalendarCard extends LitElement {
   hass: any;
 
   /** Internal (reactive via static properties) */
-  private _config!: GridCalendarCardConfig;
+  private _config!: GridCalendarCardConfig & { entities: EntityCfg[] };
   private _error: string | null = null;
   private _weekOffset = 0;
   private _weekAnchor!: Date; // start of visible 7-day window
@@ -167,11 +167,13 @@ export class GridCalendarCard extends LitElement {
 
   /** Config */
   setConfig(cfg: GridCalendarCardConfig) {
-    if (!cfg || !Array.isArray(cfg.entities) || cfg.entities.length === 0) {
-      throw new Error("Config must include at least one entity in 'entities'.");
+    if (!cfg) throw new Error("Invalid config");
+    if (cfg.view_start_time && !isHHMMSS(cfg.view_start_time)) {
+      throw new Error("view_start_time must be HH:MM:SS");
     }
-    if (!isHHMMSS(cfg.view_start_time)) throw new Error("view_start_time must be HH:MM:SS");
-    if (!isHHMMSS(cfg.view_end_time)) throw new Error("view_end_time must be HH:MM:SS");
+    if (cfg.view_end_time && !isHHMMSS(cfg.view_end_time)) {
+      throw new Error("view_end_time must be HH:MM:SS");
+    }
     const sm = Number(cfg.view_slot_minutes ?? DEFAULTS.view_slot_minutes);
     if (!Number.isFinite(sm) || sm <= 0 || sm > 180) {
       throw new Error("view_slot_minutes must be a number between 1 and 180.");
@@ -180,6 +182,7 @@ export class GridCalendarCard extends LitElement {
     // Merge defaults
     this._config = {
       ...DEFAULTS,
+      entities: [],
       ...cfg,
     };
 
